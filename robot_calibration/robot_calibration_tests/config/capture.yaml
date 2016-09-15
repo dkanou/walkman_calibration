@@ -1,0 +1,23 @@
+chains:
+  - name: arm
+    topic: /arm_control/arm_traj_controller/follow_joint_trajectory/goal
+    joints:
+     - RShSag
+     - RShLat
+     - RShYaw
+     - RElbj
+     - RForearmPlate
+     - RWrj1
+     - RWrj2
+    planning_group: arm #arm_group
+duration: 2.0
+features:
+  checkerboard_finder:
+    type: robot_calibration/CheckerboardFinder2D
+    topic: /multisense/left/image_color
+    points_x: 5
+    points_y: 4
+    size: 0.025
+    debug: true
+    camera_sensor_name: camera
+    chain_sensor_name: arm
