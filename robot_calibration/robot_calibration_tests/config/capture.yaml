@@ -2,6 +2,8 @@ chains:
   - name: arm
     topic: /arm_control/arm_traj_controller/follow_joint_trajectory/goal
     joints:
+     - NeckYawj
+     - NeckPitchj
      - RShSag
      - RShLat
      - RShYaw
