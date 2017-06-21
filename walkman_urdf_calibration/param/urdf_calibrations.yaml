@@ -1,0 +1,2 @@
+urdf_filename: "/home/vsraghavan/bigman.urdf"
+joint_names: ["LWrj2","LWrj1", "LForearmPlate", "LElbj", "LShYaw", "LShLat", "LShLat", "LShSag", "WaistYaw", "WaistSag", "WaistLat" ]

@@ -8,14 +8,17 @@ project(walkman_urdf_calibration)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  geometry_conversions
+  cmake_modules
+  geometry_msgs
   roscpp
   rospy
   sensor_msgs
   std_msgs
   tf
   tf_conversions
+  urdf
 )
+find_package(TinyXML REQUIRED)
 find_package(Eigen REQUIRED)
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -110,7 +113,7 @@ catkin_package(
   INCLUDE_DIRS include
 # LIBRARIES walkman_urdf_calibration
 #  CATKIN_DEPENDS geometry_conversions roscpp rospy sensor_msgs std_msgs tf tf_conversions
-  DEPENDS system_lib Eigen
+  DEPENDS system_lib Eigen TinyXML
 )
 
 ###########
@@ -123,6 +126,7 @@ include_directories(
  include
   ${catkin_INCLUDE_DIRS}
   ${Eigen_INCLUDE_DIRS}
+  ${TinyXML_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -138,7 +142,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/walkman_urdf_calibration_node.cpp)
+ add_executable(urdf_calibrator_node src/calibrate_urdf.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -148,12 +152,13 @@ include_directories(
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(urdf_calibrator_node walkman_urdf_calibration_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(urdf_calibrator_node
+   ${catkin_LIBRARIES}
+   ${TinyXML_LIBRARIES}
+ )
 
 #############
 ## Install ##
