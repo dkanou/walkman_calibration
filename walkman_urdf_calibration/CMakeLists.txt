@@ -20,6 +20,9 @@ find_package(catkin REQUIRED COMPONENTS
 )
 find_package(TinyXML REQUIRED)
 find_package(Eigen REQUIRED)
+find_package(SuiteSparse)
+find_package(Ceres REQUIRED)
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -127,12 +130,14 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${Eigen_INCLUDE_DIRS}
   ${TinyXML_INCLUDE_DIRS}
+  ${SuiteSparse_INCLUDE_DIRS}
+  ${CERES_INCLUDES}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/walkman_urdf_calibration.cpp
-# )
+ add_library(calibrate_urdf
+  src/calibrate_urdf.cpp
+ )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -155,9 +160,11 @@ include_directories(
 add_dependencies(urdf_calibrator_node walkman_urdf_calibration_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(urdf_calibrator_node
+target_link_libraries(urdf_calibrator_node calibrate_urdf
    ${catkin_LIBRARIES}
    ${TinyXML_LIBRARIES}
+    ${SuiteSparse_LIBRARIES}
+    ${CERES_LIBRARIES}
  )
 
 #############

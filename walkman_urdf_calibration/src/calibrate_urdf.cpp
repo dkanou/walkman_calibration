@@ -18,7 +18,7 @@ UrdfCalibrator::UrdfCalibrator(ros::NodeHandle nh)
   }
   urdf_xml_doc_.Parse(urdf_file_name_.c_str());
   //robot_element_=urdf_xml_doc_.FirstChildElement("robot");
-  struct joint_to_calibrate joint_it;
+  JointToCalibrate joint_it;
   for(std::vector<std::string>::iterator it=joint_names_.begin(); it!=joint_names_.end(); ++it)
   {
     joint_it.joint_name_=*it;
@@ -35,7 +35,7 @@ UrdfCalibrator::~UrdfCalibrator()
 
 }
 
-void UrdfCalibrator::getJointInitFromUrdf(struct joint_to_calibrate &joint)
+void UrdfCalibrator::getJointInitFromUrdf(JointToCalibrate &joint)
 {
   joint.parent_child_transform_.setZero();
   joint.parent_child_transform_(0,3)=float(robot_urdf_model_.getJoint(joint.joint_name_)->parent_to_joint_origin_transform.position.x);
