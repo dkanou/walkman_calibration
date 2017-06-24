@@ -14,16 +14,19 @@
 #include <urdf/model.h>
 #include <iostream>
 #include <tinyxml.h>
+#include <boost/bind.hpp>
 #include <ceres/ceres.h>
 #include <tf/transform_listener.h>
 #include <tf/transform_broadcaster.h>
 #include <tf_conversions/tf_eigen.h>
+#include "walkman_urdf_calibration/OptimizeUrdfJoints.h"
 
 struct JointToCalibrate{
   std::string joint_name_;
   std::string parent_name_;
   std::string child_name_;
   Eigen::Matrix4f parent_child_transform_;
+  int joint_order_index_;
 };
 
 struct MinimizeUrdfError{
@@ -94,24 +97,35 @@ struct MinimizeUrdfError{
     UrdfCalibrator(ros::NodeHandle nh);
     ~UrdfCalibrator();
     /**
-    * @brief: function to load all data of the joint to be calibrated in to the struct
-    * @param: joint: joint to which data is loaded
-    */
+      * @brief: function to load all data of the joint to be calibrated in to the struct
+      * @param: joint: joint to which data is loaded
+      */
     void getJointInitFromUrdf(JointToCalibrate &joint);
 
     /**
-    * @brief: function to wrtie all data of the calibrated joint to urdf
-    * @param: joint: data of the joint which is written to urdf.
-    */
-    void writeJointToUrdf(JointToCalibrate calibrated_joint);
+      * @brief: function to wrtie all data of the calibrated joint to urdf
+      * @param: joint: data of the joint which is written to urdf.
+      */
+    void writeJointsToUrdf(double* optimized_joint_values);
+
+    /**
+      * @brief: service server which will receive command to get data from tf and opti track and minimise overall error
+      * @param: req request for service. if 1 then data is added to optimization block. if 2 optimizer solves the problem.
+      * @return: always returns true.
+      */
+    bool calibrateUrdfSrvServer(walkman_urdf_calibration::OptimizeUrdfJoints::Request &req,walkman_urdf_calibration::OptimizeUrdfJoints::Response &res );
 
     std::string urdf_file_name_; /**<urdf file name */
     std::vector<std::string> joint_names_; /**< vector of names of joints to be calibrated */
-    std::vector<JointToCalibrate> joints_to_calibrate; /**< vector of joints to be calibrated */
+    std::vector<JointToCalibrate> joints_to_calibrate_; /**< vector of joints to be calibrated */
     urdf::Model robot_urdf_model_; /**< variable to store the urdf model */
     TiXmlDocument urdf_xml_doc_; /**< object to xml doc, to be used for modifcation */
     //TiXmlElement robot_element_; /**< object to element in xml doc */
-
+    ceres::Problem* ceres_problem_; /**< pointer to ceres problem **/
+    ros::ServiceServer optimization_service_server_; /**< service server for recording and optimizing data at will */
+    tf::TransformListener transform_listener_; /**< listens to all joint transforms */
+    std::string waist_opti_frame_str_, hand_opti_frame_str_; /**<string frames for the bodies tracked by opti-track */
+    double* free_params_init_; /**<pointer to the free params for optimizer */
   };
 
   #endif

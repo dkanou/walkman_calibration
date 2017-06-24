@@ -1,0 +1,4 @@
+<launch>
+  <rosparam command="load" file="$(find walkman_urdf_calibration)/param/urdf_calibrations.yaml" />
+  <node pkg="walkman_urdf_calibration" type="urdf_calibrator_node" name="urdf_calibrator_node" output="screen" launch-prefix="gdb -ex run --args" />
+</launch>
