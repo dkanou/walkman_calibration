@@ -13,23 +13,23 @@ std::string elbow_frame; // initialize elbow frame
 
 void myfsm::Start::react(const XBot::FSM::Event& e) {
 
-	// std::cout << "react start" << std::endl;
+    // std::cout << "react start" << std::endl;
 }
 
 void myfsm::Start::entry(const XBot::FSM::Message& msg){
 
-	// std::cout << "entry start" << std::endl;
+    // std::cout << "entry start" << std::endl;
 }
 
 
 void myfsm::Start::run(double time, double period){
 
-	// std::cout << "run start" << std::endl;
+    // std::cout << "run start" << std::endl;
 
-	// shared_data()._lhand_pose =
- 	// ros::topic::waitForMessage<geometry_msgs::PoseStamped>("_lhand_pose");
+    // shared_data()._lhand_pose =
+    // ros::topic::waitForMessage<geometry_msgs::PoseStamped>("_lhand_pose");
     // Debug msg
-  	// std::cout << shared_data()._lhand_pose->pose.position.y << std::endl;
+    // std::cout << shared_data()._lhand_pose->pose.position.y << std::endl;
 
     if (!first){ // initialize hand_frame
         // blocking reading: wait for a command
@@ -67,7 +67,7 @@ void myfsm::Start::run(double time, double period){
 
 void myfsm::Start::exit (){
 
-	// std::cout << "exit start" << std::endl;
+    // std::cout << "exit start" << std::endl;
 }
 
 /*END Start*/
@@ -77,16 +77,16 @@ void myfsm::Start::exit (){
 
 void myfsm::MoveHand::react(const XBot::FSM::Event& e) {
 
-	// std::cout << "react move hand" << std::endl;
+    // std::cout << "react move hand" << std::endl;
 }
 
 void myfsm::MoveHand::entry(const XBot::FSM::Message& msg){
 
-	// std::cout << "entry move hand" << std::endl;
+    // std::cout << "entry move hand" << std::endl;
     std::cout << "Iteration: " << i << std::endl;
     std::cout << "Hand Frame: " << hand_frame.data() << std::endl;
 
-	// sense and sync model
+    // sense and sync model
     shared_data()._robot->sense();
     
     // Get current hand pose
@@ -123,114 +123,123 @@ void myfsm::MoveHand::entry(const XBot::FSM::Message& msg){
     
     switch(i) { // position representation: (x, y, z)
 
-		case 1: // (0.0, 0.3, 0.3)
-		end_frame_hand.pose.position.y += 0.3 * mult;
-   		end_frame_hand.pose.position.z += 0.3; 
-		break;
+        case 1: // (0.0, 0.3, 0.3)
+        end_frame_hand.pose.position.x += 0.0;
+        end_frame_hand.pose.position.y += 0.3 * mult;
+        end_frame_hand.pose.position.z += 0.3; 
+        break;
 
-		case 2: // (0.0, 0.5, 0.5)
-        end_frame_hand.pose.position.y += 0.2 * mult;
-        end_frame_hand.pose.position.z += 0.2;
-		break;
-
-		case 3: // (0.6, 0.2, 0.4)
-        end_frame_hand.pose.position.x += 0.6;
-        end_frame_hand.pose.position.y -= 0.3 * mult;
-        end_frame_hand.pose.position.z -= 0.1;
-		break;
-
-        case 4: // (0.45, 0.1, 0.3)
-        end_frame_hand.pose.position.x -= 0.15;
+        case 2: // (0.1, 0.2, 0.2)
+        end_frame_hand.pose.position.x += 0.1;
         end_frame_hand.pose.position.y -= 0.1 * mult;
         end_frame_hand.pose.position.z -= 0.1;
         break;
 
-        case 5: // (0.3, 0.1, 0.05)
-        end_frame_hand.pose.position.x -= 0.15; 
-        end_frame_hand.pose.position.z -= 0.25;
+        case 3: // (0.5, 0.2, 0.1)
+        end_frame_hand.pose.position.x += 0.4;
+        end_frame_hand.pose.position.y -= 0.0 * mult;
+        end_frame_hand.pose.position.z -= 0.1;
         break;
 
-        case 6: // (0.2, 0.30, 0.3) // diagonal
-        end_frame_hand.pose.position.x -= 0.1;
+        case 4: // (0.45, 0.1, 0.2)
+        end_frame_hand.pose.position.x -= 0.15;
+        end_frame_hand.pose.position.y -= 0.1 * mult;
+        end_frame_hand.pose.position.z += 0.1;
+        break;
+
+        case 5: // (0.2, 0.1, 0.05)
+        end_frame_hand.pose.position.x -= 0.25; 
+        end_frame_hand.pose.position.y -= 0.0 * mult;
+        end_frame_hand.pose.position.z -= 0.15;
+        break;
+
+        case 6: // (0.2, 0.3, 0.3)
+        end_frame_hand.pose.position.x -= 0.0;
         end_frame_hand.pose.position.y += 0.2 * mult;
         end_frame_hand.pose.position.z += 0.25;
         break;
 
-        case 7: // (0.2 , 0.5, 0.4)
-        end_frame_hand.pose.position.y += 0.2 * mult;
-        end_frame_hand.pose.position.z += 0.1;
+        case 7: // (0.2 , 0.1, 0.0)
+        end_frame_hand.pose.position.x -= 0.0;
+        end_frame_hand.pose.position.y -= 0.2 * mult;
+        end_frame_hand.pose.position.z -= 0.3;
         break;
 
-        case 8: // (0.3 , 0.3, 0.0)
+        case 8: // (0.3 , 0.1, 0.0)
         end_frame_hand.pose.position.x += 0.1;
-        end_frame_hand.pose.position.y -= 0.2 * mult;
-        end_frame_hand.pose.position.z -= 0.4;
+        end_frame_hand.pose.position.y -= 0.0 * mult;
+        end_frame_hand.pose.position.z += 0.0;
         break;
 
         case 9: // (0.0, 0.0, 0.0)
         end_frame_hand.pose.position.x -= 0.3; // homing
-        end_frame_hand.pose.position.y -= 0.3 * mult;
+        end_frame_hand.pose.position.y -= 0.1 * mult;
         end_frame_hand.pose.position.z -= 0.0;
         break;
 
+        // orientation in z-axis
         case 10: // (0.0, 0.3, 0.3)
+        end_frame_hand.pose.position.x += 0.0;
         end_frame_hand.pose.position.y += 0.3 * mult;
         end_frame_hand.pose.position.z += 0.3;
 
-        end_frame_hand.pose.orientation.z -= 0.6 * mult; // orientation
+        end_frame_hand.pose.orientation.z -= 0.5 * mult; // orientation
         break;
 
-        case 11: // (0.0, 0.5, 0.5)
-        end_frame_hand.pose.position.y += 0.2 * mult;
-        end_frame_hand.pose.position.z += 0.2;
-        break;
-
-        case 12: // (0.6, 0.2, 0.4)
-        end_frame_hand.pose.position.x += 0.6;
-        end_frame_hand.pose.position.y -= 0.3 * mult;
-        end_frame_hand.pose.position.z -= 0.1;
-        break;
-
-        case 13: // (0.45, 0.1, 0.3)
-        end_frame_hand.pose.position.x -= 0.15;
+        case 11: // (0.1, 0.2, 0.2)
+        end_frame_hand.pose.position.x += 0.1;
         end_frame_hand.pose.position.y -= 0.1 * mult;
         end_frame_hand.pose.position.z -= 0.1;
         break;
 
-        case 14: // (0.3, 0.1, 0.05)
-        end_frame_hand.pose.position.x -= 0.15; 
-        end_frame_hand.pose.position.z -= 0.25;
+        case 12: // (0.5, 0.2, 0.1)
+        end_frame_hand.pose.position.x += 0.4;
+        end_frame_hand.pose.position.y -= 0.0 * mult;
+        end_frame_hand.pose.position.z -= 0.1;
         break;
 
-        case 15: // (0.2, 0.30, 0.3)
-        end_frame_hand.pose.position.x -= 0.1;
+        case 13: // (0.45, 0.1, 0.2)
+        end_frame_hand.pose.position.x -= 0.15;
+        end_frame_hand.pose.position.y -= 0.1 * mult;
+        end_frame_hand.pose.position.z += 0.1;
+        break;
+
+        case 14: // (0.2, 0.1, 0.05)
+        end_frame_hand.pose.position.x -= 0.25; 
+        end_frame_hand.pose.position.y -= 0.0 * mult;
+        end_frame_hand.pose.position.z -= 0.15;
+        break;
+
+        case 15: // (0.2, 0.3, 0.3)
+        end_frame_hand.pose.position.x -= 0.0;
         end_frame_hand.pose.position.y += 0.2 * mult;
         end_frame_hand.pose.position.z += 0.25;
         break;
 
-        case 16: // (0.2 , 0.5, 0.4)
-        end_frame_hand.pose.position.y += 0.2 * mult;
-        end_frame_hand.pose.position.z += 0.1;
+        case 16: // (0.2 , 0.1, 0.0)
+        end_frame_hand.pose.position.x -= 0.0;
+        end_frame_hand.pose.position.y -= 0.2 * mult;
+        end_frame_hand.pose.position.z -= 0.3;
         break;
 
-        case 17: // (0.3 , 0.3, 0.0)
+        case 17: // (0.3 , 0.1, 0.0)
         end_frame_hand.pose.position.x += 0.1;
-        end_frame_hand.pose.position.y -= 0.2 * mult;
-        end_frame_hand.pose.position.z -= 0.4;
+        end_frame_hand.pose.position.y -= 0.0 * mult;
+        end_frame_hand.pose.position.z += 0.0;
         break;
 
         default: // (0.0, 0.0, 0.0)
         end_frame_hand.pose.position.x -= 0.3; // homing
-        end_frame_hand.pose.position.y -= 0.3 * mult;
+        end_frame_hand.pose.position.y -= 0.1 * mult;
         end_frame_hand.pose.position.z -= 0.0;
 
-        end_frame_hand.pose.orientation.z += 0.6 * mult; // re-orientate
+        end_frame_hand.pose.orientation.z += 0.5 * mult; // re-orientate
 
         first = false;
-		i=0;
-		break;
+        i=0;
+        break;
 
-	} // end switch
+    } // end switch
 
 
     end_hand.distal_frame = hand_frame.data();
@@ -238,7 +247,7 @@ void myfsm::MoveHand::entry(const XBot::FSM::Message& msg){
     // end_elbow.distal_frame = elbow_frame.data();
     // end_elbow.frame = end_frame_elbow;
 
-	// define the first segment
+    // define the first segment
     trajectory_utils::segment s1;
     s1.type.data = 0;        // min jerk traj
     s1.T.data = 5.0;         // traj duration 5 second      
@@ -251,7 +260,7 @@ void myfsm::MoveHand::entry(const XBot::FSM::Message& msg){
     // s2.start = start_elbow;        // start pose
     // s2.end = end_elbow;            // end pose 
 
-	// only one segment in this example
+    // only one segment in this example
     std::vector<trajectory_utils::segment> segments;
     segments.push_back(s1);
     // segments.push_back(s2);
@@ -270,26 +279,26 @@ void myfsm::MoveHand::entry(const XBot::FSM::Message& msg){
 
 void myfsm::MoveHand::run(double time, double period){
 
-	// std::cout << "run move hand" << std::endl;
+    // std::cout << "run move hand" << std::endl;
 
-	// blocking reading: wait for a command
-  	if(shared_data().command.read(shared_data().current_command))
-  	{
-    	// std::cout << "Command: " << shared_data().current_command.str() << std::endl;
+    // blocking reading: wait for a command
+    if(shared_data().command.read(shared_data().current_command))
+    {
+        // std::cout << "Command: " << shared_data().current_command.str() << std::endl;
 
-    	// chech input
-    	if (!shared_data().current_command.str().compare("next")) {
-    		transit("Start");
-    	}
+        // chech input
+        if (!shared_data().current_command.str().compare("next")) {
+            transit("Start");
+        }
 
-  	} // end if
+    } // end if
 
-	// transit("Start");
+    // transit("Start");
 } // end run
 
 void myfsm::MoveHand::exit (){
 
-	// std::cout << "exit move hand" << std::endl;
+    // std::cout << "exit move hand" << std::endl;
 }
 
 /*END MoveHand*/
