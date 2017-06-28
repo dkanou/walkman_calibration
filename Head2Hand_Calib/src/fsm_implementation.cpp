@@ -179,6 +179,7 @@ void myfsm::MoveHand::entry(const XBot::FSM::Message& msg){
 
         // orientation in z-axis
         case 10: // (0.0, 0.3, 0.3)
+        // std::cout << "Starting orientation" << std::endl;
         end_frame_hand.pose.position.x += 0.0;
         end_frame_hand.pose.position.y += 0.3 * mult;
         end_frame_hand.pose.position.z += 0.3;
@@ -237,6 +238,7 @@ void myfsm::MoveHand::entry(const XBot::FSM::Message& msg){
 
         first = false;
         i=0;
+        std::cout << std::endl << "\t Please set which hand to move !" << std::endl;
         break;
 
     } // end switch
