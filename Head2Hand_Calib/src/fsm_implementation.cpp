@@ -7,7 +7,7 @@ bool first = false;
 int mult = 1; // multiplier to get pose in respect to the hand
 // char hand_frame[10] = "LSoftHand";
 std::string hand_frame; // initialize hand_frame
-std::string elbow_frame; // initialize elbow frame
+// std::string elbow_frame; // initialize elbow frame
 
  /*BEGIN Start*/
 
@@ -40,7 +40,7 @@ void myfsm::Start::run(double time, double period){
             // chech input for right arm
             if (!shared_data().current_command.str().compare("right")) {
                 hand_frame = "RSoftHand";
-                elbow_frame = "RElb";
+                // elbow_frame = "RElb";
                 first = true;
                 mult = -1;
                 i++; // counter for movements
@@ -50,7 +50,7 @@ void myfsm::Start::run(double time, double period){
             // chech input for left arm
             if (!shared_data().current_command.str().compare("left")) {
                 hand_frame = "LSoftHand";
-                elbow_frame = "LElb";
+                // elbow_frame = "LElb";
                 first = true;
                 mult = 1;
                 i++; // counter for movements
@@ -128,6 +128,23 @@ void myfsm::MoveHand::entry(const XBot::FSM::Message& msg){
         end_frame_hand.pose.position.y += 0.3 * mult;
         end_frame_hand.pose.position.z += 0.3; 
         break;
+
+        // case 2: // (0.0, 0.3, 0.3)
+        // end_frame_hand.pose.position.x += 0.0;
+        // end_frame_hand.pose.position.y -= 0.3 * mult;
+        // end_frame_hand.pose.position.z -= 0.3; 
+        // break;
+
+        // default :
+        // end_frame_hand.pose.position.x += 0.0;
+        // end_frame_hand.pose.position.y -= 0.0 * mult;
+        // end_frame_hand.pose.position.z -= 0.0; 
+
+        // first = false;
+        // i=0;
+        // std::cout << std::endl << "\t Please set which hand to move !" << std::endl;
+        // break;
+
 
         case 2: // (0.1, 0.2, 0.2)
         end_frame_hand.pose.position.x += 0.1;
@@ -284,6 +301,9 @@ void myfsm::MoveHand::run(double time, double period){
     // std::cout << "run move hand" << std::endl;
 
     // blocking reading: wait for a command
+    if (!first) {
+        transit("Start");
+    }
     if(shared_data().command.read(shared_data().current_command))
     {
         // std::cout << "Command: " << shared_data().current_command.str() << std::endl;
