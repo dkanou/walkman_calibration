@@ -100,7 +100,7 @@ bool UrdfCalibrator::calibrateUrdfSrvServer(walkman_urdf_calibration::OptimizeUr
       //tf::matrixTFToEigen(joint_transform.getBasis(),temp_rotation);
       transform_matrix=tfToHomogenousMatrix(joint_transform);
       change_in_transform_matrix=it->parent_child_transform_.inverse()*transform_matrix;
-      test_matrix=(change_in_transform_matrix*it->parent_child_transform_)*test_matrix;
+      test_matrix=test_matrix*(it->parent_child_transform_*change_in_transform_matrix);
       Eigen::Quaternionf temp_quat(change_in_transform_matrix.block<3,3>(0,0));
       tf::quaternionEigenToTF(temp_quat.cast<double>(),tempt_tf_quat);
       tf::Matrix3x3(tempt_tf_quat).getRPY(roll, pitch, yaw);

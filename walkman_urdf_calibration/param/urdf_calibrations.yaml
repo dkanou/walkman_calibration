@@ -1,5 +1,5 @@
-urdf_filename: "/home/vsraghavan/bigman.urdf"
+urdf_filename: "/home/walkman-simulator/bigman.urdf"
 joint_names: ["LWrj2","LWrj1", "LForearmPlate", "LElbj", "LShYaw", "LShLat", "LShSag", "WaistYaw", "WaistSag", "WaistLat" ]
 waist_in_optitrack: "Waist"
-file_save_name: "/home/vsraghavan/bigman_test.urdf"
+file_save_name: "/home/walkman-simulator/bigman_test.urdf"
 hand_in_optitrack: "OptiHand"

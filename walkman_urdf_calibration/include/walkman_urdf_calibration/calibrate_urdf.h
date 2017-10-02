@@ -70,7 +70,7 @@ struct MinimizeUrdfError{
     {
       joint_init_matrix=vectorToTransformMat(float(joint_init_param[(i+1)*6-6]),float(joint_init_param[(i+1)*6-5]),float(joint_init_param[(i+1)*6-4]),float(joint_init_param[(i+1)*6-3]),float(joint_init_param[(i+1)*6-2]),float(joint_init_param[(i+1)*6-1]));
       joint_change_matrix=vectorToTransformMat(joint_changes_[(i+1)*6-6],joint_changes_[(i+1)*6-5],joint_changes_[(i+1)*6-4],joint_changes_[(i+1)*6-3],joint_changes_[(i+1)*6-2],joint_changes_[(i+1)*6-1]);
-      new_calculated_pose*=(joint_init_matrix*joint_change_matrix);
+      new_calculated_pose=(joint_init_matrix*joint_change_matrix)*new_calculated_pose;
     }
     if(test_one_==1)
     {
