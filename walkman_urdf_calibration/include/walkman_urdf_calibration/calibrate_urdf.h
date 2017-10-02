@@ -43,19 +43,19 @@ struct MinimizeUrdfError{
     if(joint_changes_!=NULL)
     delete[] joint_changes_;
   }
-  Eigen::Matrix3f eulerToRot( float roll,float pitch,float yaw ) const //Obtained from Urdf::model::joint::pose
+  void eulerToRot( float roll,float pitch,float yaw, Eigen::Matrix3f rot) const //Obtained from Urdf::model::joint::pose
   {
-    Eigen::Matrix3f rot;
-    rot= Eigen::AngleAxisf(roll, Eigen::Vector3f::UnitX())
-  * Eigen::AngleAxisf(pitch,  Eigen::Vector3f::UnitY())
-  * Eigen::AngleAxisf(yaw, Eigen::Vector3f::UnitZ());
-  return rot;
+    tf::Quaternion temp_tf_quat;
+    temp_tf_quat.setRPY(roll,pitch,yaw);
+    Eigen::Quaterniond temp_quat;
+    tf::quaternionTFToEigen(temp_tf_quat,temp_quat);
+    rot= temp_quat.cast<float>().toRotationMatrix();
   }
   Eigen::Matrix4f vectorToTransformMat(float px,float py, float pz, float roll, float pitch, float yaw) const
   {
     Eigen::Matrix4f transform_matrix;
     transform_matrix.setZero();
-    transform_matrix.block<3,3>(0,0) = eulerToRot(roll,pitch,yaw);
+    eulerToRot(roll,pitch,yaw,transform_matrix.block<3,3>(0,0));
     transform_matrix(0,3) = px;
     transform_matrix(1,3) = py;
     transform_matrix(2,3) = pz;
@@ -70,7 +70,7 @@ struct MinimizeUrdfError{
     {
       joint_init_matrix=vectorToTransformMat(float(joint_init_param[(i+1)*6-6]),float(joint_init_param[(i+1)*6-5]),float(joint_init_param[(i+1)*6-4]),float(joint_init_param[(i+1)*6-3]),float(joint_init_param[(i+1)*6-2]),float(joint_init_param[(i+1)*6-1]));
       joint_change_matrix=vectorToTransformMat(joint_changes_[(i+1)*6-6],joint_changes_[(i+1)*6-5],joint_changes_[(i+1)*6-4],joint_changes_[(i+1)*6-3],joint_changes_[(i+1)*6-2],joint_changes_[(i+1)*6-1]);
-      new_calculated_pose=(joint_change_matrix*joint_init_matrix)*new_calculated_pose;
+      new_calculated_pose*=(joint_init_matrix*joint_change_matrix);
     }
     if(test_one_==1)
     {

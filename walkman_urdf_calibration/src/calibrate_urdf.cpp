@@ -46,13 +46,18 @@ UrdfCalibrator::UrdfCalibrator(ros::NodeHandle nh)
     getJointInitFromUrdf(joint_it);
     joints_to_calibrate_.push_back(joint_it);
     ROS_INFO(" \nGot data of %s joint", joint_it.joint_name_.c_str());
-    Eigen::Vector3f euler_angles=joint_it.parent_child_transform_.block<3,3>(0,0).eulerAngles(0,1,2);
+    Eigen::Quaternionf temp_quat(joint_it.parent_child_transform_.block<3,3>(0,0));
+    tf::Quaternion tempt_tf_quat;
+    tf::quaternionEigenToTF(temp_quat.cast<double>(),tempt_tf_quat);
+    double roll,pitch,yaw;
+    tf::Matrix3x3(tempt_tf_quat).getRPY(roll, pitch, yaw);
+
     free_params_init_[(i+1)*6-6]=double(joint_it.parent_child_transform_(0,3));
     free_params_init_[(i+1)*6-5]=double(joint_it.parent_child_transform_(1,3));
     free_params_init_[(i+1)*6-4]=double(joint_it.parent_child_transform_(2,3));
-    free_params_init_[(i+1)*6-3]=double(euler_angles[0]);
-    free_params_init_[(i+1)*6-2]=double(euler_angles[1]);
-    free_params_init_[(i+1)*6-1]=double(euler_angles[2]);
+    free_params_init_[(i+1)*6-3]=roll;
+    free_params_init_[(i+1)*6-2]=pitch;
+    free_params_init_[(i+1)*6-1]=yaw;
     std::cout<<"\n"<<free_params_init_[i];
     i++;
   }
@@ -86,22 +91,26 @@ bool UrdfCalibrator::calibrateUrdfSrvServer(walkman_urdf_calibration::OptimizeUr
     temp_rotation.setZero();
     int i=0;
     test_matrix=Eigen::Matrix4f::Identity();
+    double roll,pitch,yaw;
+    tf::Quaternion tempt_tf_quat;
     for(std::vector<JointToCalibrate>::iterator it=joints_to_calibrate_.begin();it!=joints_to_calibrate_.end();++it)
     {
       transform_listener_.waitForTransform(it->parent_name_,it->child_name_,ros::Time(0), ros::Duration(6.0));
       transform_listener_.lookupTransform(it->parent_name_,it->child_name_,ros::Time(0),joint_transform );
       //tf::matrixTFToEigen(joint_transform.getBasis(),temp_rotation);
       transform_matrix=tfToHomogenousMatrix(joint_transform);
-      change_in_transform_matrix=transform_matrix*it->parent_child_transform_.inverse();
+      change_in_transform_matrix=it->parent_child_transform_.inverse()*transform_matrix;
       test_matrix=(change_in_transform_matrix*it->parent_child_transform_)*test_matrix;
-      Eigen::Vector3f euler_angles=change_in_transform_matrix.block<3,3>(0,0).eulerAngles(0,1,2);\
+      Eigen::Quaternionf temp_quat(change_in_transform_matrix.block<3,3>(0,0));
+      tf::quaternionEigenToTF(temp_quat.cast<double>(),tempt_tf_quat);
+      tf::Matrix3x3(tempt_tf_quat).getRPY(roll, pitch, yaw);
       std::cout<<"\n the goddamned change\n"<<change_in_transform_matrix<<"\n";
       joint_change_vector[(i+1)*6-6]=change_in_transform_matrix(0,3);
       joint_change_vector[(i+1)*6-5]=change_in_transform_matrix(1,3);
       joint_change_vector[(i+1)*6-4]=change_in_transform_matrix(2,3);
-      joint_change_vector[(i+1)*6-3]=euler_angles[0];
-      joint_change_vector[(i+1)*6-2]=euler_angles[1];
-      joint_change_vector[(i+1)*6-1]=euler_angles[2];
+      joint_change_vector[(i+1)*6-3]=roll;
+      joint_change_vector[(i+1)*6-2]=pitch;
+      joint_change_vector[(i+1)*6-1]=yaw;
       i++;
     }
 
